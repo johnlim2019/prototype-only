@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -22,8 +23,13 @@ public class PlayerMovement : MonoBehaviour
   public LayerMask enemyMask;
   public float offset;
   public Vector2 hitBoxSize;
-  private float halfWidth;
-  private float halfHeight;
+  public UnityEvent<int> TakeDamage;
+
+  public float countdownDuration = 0.7f; // in seconds
+  private float countdownTimeLeft;
+  private bool countdownActive = false;
+  public int Damage = 13;
+  private int giveDamageHit = 5;
 
   // Start is called before the first frame update
   void Start()
@@ -32,14 +38,24 @@ public class PlayerMovement : MonoBehaviour
     animator = GetComponent<Animator>();
     boxCollider = GetComponent<BoxCollider2D>();
     sprite = GetComponent<SpriteRenderer>();
-    halfWidth = sprite.bounds.size.x / 2;
-    halfHeight = sprite.bounds.size.y / 2;
+    countdownTimeLeft = countdownDuration;
   }
 
   // Update is called once per frame
   void Update()
   {
-
+    if (countdownActive)
+    {
+      if (countdownTimeLeft > 0)
+      {
+        countdownTimeLeft -= Time.deltaTime;
+      }
+      else
+      {
+        countdownActive = false;
+        countdownTimeLeft = countdownDuration;
+      }
+    }
   }
 
   void FixedUpdate()
@@ -91,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
     if (hit.collider != null)
     {
       Debug.Log("melee hit with object " + hit.collider.gameObject.name);
+      hit.collider.gameObject.GetComponent<EnemyHealth>().TakeDamage(giveDamageHit);
     }
   }
   void OnDrawGizmos()
@@ -98,5 +115,15 @@ public class PlayerMovement : MonoBehaviour
     float direction = sprite.flipX ? 1 : -1;
     Gizmos.color = Color.yellow;
     Gizmos.DrawCube(transform.position + transform.right * offset * direction, hitBoxSize);
+  }
+
+  void OnTriggerStay2D(Collider2D other)
+  {
+    // Debug.Log(countdownActive);
+    if (other.CompareTag("Enemy") && !countdownActive)
+    {
+      countdownActive = true;
+      TakeDamage.Invoke(Damage);
+    }
   }
 }

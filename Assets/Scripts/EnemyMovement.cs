@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-  readonly float speed = 0.1f;
+  readonly float speed = 1f;
   public GameObject player;
   private Rigidbody2D rigidBody;
   // Start is called before the first frame update
@@ -16,7 +16,7 @@ public class EnemyMovement : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    rigidBody.AddForce(getDirection() * speed);
+    rigidBody.velocity = getDirection() * speed;
   }
 
   Vector2 getDirection()

@@ -5,7 +5,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
 
-  public Transform player;
+
+  [SerializeField] public Transform player;
   public Transform start;
   public Transform end;
   private float offset; // initial x-offset between camera and Mario
@@ -15,7 +16,8 @@ public class CameraController : MonoBehaviour
   private float endY;
   private float viewportHalfWidth;
   private float viewportHalfHeight;
-
+  private float smoothTime = 0.5f;
+  private Vector3 velocity = Vector3.zero;
   void Start()
   {
     // get coordinate of the bottomleft of the viewport
@@ -33,9 +35,9 @@ public class CameraController : MonoBehaviour
   {
     float desiredX = player.position.x + offset;
     float desiredY = player.position.y - offset;
+    Vector3 desired = new Vector3(desiredX, desiredY, this.transform.position.z);
     // Debug.Log(desiredX + " " + desiredY);
-    if (desiredX > startX && desiredX < endX && desiredY > startY && desiredY < endY)
-      this.transform.position = new Vector3(desiredX, desiredY, this.transform.position.z);
+    this.transform.position = Vector3.SmoothDamp(this.transform.position, desired, ref velocity, smoothTime);
   }
 
 }

@@ -87,12 +87,16 @@ public class PlayerMovement : MonoBehaviour
   public void Melee()
   {
     float direction = sprite.flipX ? 1 : -1;
-    Physics2D.BoxCast(transform.position - new Vector3(halfWidth, halfHeight), hitBoxSize, 0, transform.right * direction, offset, enemyMask);
+    RaycastHit2D hit = Physics2D.BoxCast(transform.position, hitBoxSize, 0, transform.right * direction, offset, enemyMask);
+    if (hit.collider != null)
+    {
+      Debug.Log("melee hit with object " + hit.collider.gameObject.name);
+    }
   }
   void OnDrawGizmos()
   {
     float direction = sprite.flipX ? 1 : -1;
     Gizmos.color = Color.yellow;
-    Gizmos.DrawCube(transform.position - new Vector3(halfWidth, halfHeight, 0f) + transform.right * offset * direction, hitBoxSize);
+    Gizmos.DrawCube(transform.position + transform.right * offset * direction, hitBoxSize);
   }
 }

@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
   public float playerMaxSpeed = 0.0001f;
   public bool playerAlive = true;
 
+  public int playerHealth = 100;
 
 
   // Start is called before the first frame update

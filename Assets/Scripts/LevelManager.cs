@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-  public float playerSpeed = 0.0001f;
-  public float playerMaxSpeed = 0.0001f;
+  public float playerSpeed = 5f;
+  public float playerMaxSpeed = 5f;
   public bool playerAlive = true;
 
   public int playerHealth = 100;
